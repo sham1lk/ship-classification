@@ -24,8 +24,10 @@ class ShipDataset(ImageFolder):
         """
         path, target = self.samples[index]
         sample = self.loader(path)
+        sample = sample.resize((256, 256))
         sample = np.asarray(sample).astype(np.float32)
         sample = np.moveaxis(sample, -1, 0)
+
         if self.transform is not None and self.should_transform:
             sample = self.transform(sample)
         if self.target_transform is not None:
