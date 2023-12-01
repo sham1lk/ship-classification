@@ -19,9 +19,8 @@ class Classifier(pl.LightningModule):
         self.adaptive_lr = adaptive_lr
         self.freeze = freeze
         if self.freeze:
-            for param in list(self.model.parameters())[:-1]:
+            for param in self.model.features:
                 param.requires_grad = False
-
     def forward(self, x):
         return self.model(x)
 
@@ -52,8 +51,8 @@ class Classifier(pl.LightningModule):
 
     def on_train_epoch_end(self) -> None:
         if self.freeze:
-            for param in list(self.model.parameters())[:-1][::-1]:
-                if param.requires_grad:
+            for param in self.model.features:
+                if not param.requires_grad:
                     param.requires_grad = True
                     break
 
@@ -61,7 +60,7 @@ class Classifier(pl.LightningModule):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
         if self.adaptive_lr:
             scheduler = torch.optim.lr_scheduler.StepLR(
-                optimizer, step_size=10, gamma=0.5) # TODO: Move params to config
-            return [optimizer], [scheduler]
+                optimizer, step_size=7, gamma=0.2) # TODO: Move params to config
+            return [optimizer], {'scheduler': scheduler, 'interval': 'epoch', 'frequency': 1}
         return optimizer
 

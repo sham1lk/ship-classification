@@ -22,6 +22,9 @@ class ShipDataset(ImageFolder):
         Returns:
             tuple: (sample, target) where target is class_index of the target class.
         """
+        if index == 0:
+            self.update_iteration()
+
         path, target = self.samples[index]
         sample = self.loader(path)
         sample = sample.resize((256, 256))
