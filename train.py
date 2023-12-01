@@ -27,7 +27,7 @@ def train(freeze_layers, adaptive_lr, adaptive_aug):
         [0.75, 0.25]
     )
     val_dataset.adaptive_aug = False
-    val_dataset.adaptive_aug = None
+    val_dataset.transforms = None
     trainer.fit(
         model,
         DataLoader(train_dataset, batch_size=64, shuffle=True),
