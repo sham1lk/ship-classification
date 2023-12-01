@@ -2,7 +2,7 @@ import click
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import WandbLogger
 from torch.utils.data import DataLoader, random_split
-from dataset import ShipDataset
+from dataset import FolderDatasetAdaptiveAug
 from model import Classifier
 from torchvision.transforms import v2
 
@@ -20,7 +20,7 @@ def train(freeze_layers, adaptive_lr, adaptive_aug):
         v2.RandomVerticalFlip(p=0.5),
         v2.RandomRotation(30, expand=True)
     ])
-    train_dataset, val_dataset = random_split(ShipDataset(
+    train_dataset, val_dataset = random_split(FolderDatasetAdaptiveAug(
         "./data",
         transform=train_transforms,
         adaptive_aug=adaptive_aug),

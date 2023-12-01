@@ -4,9 +4,9 @@ import numpy as np
 from torchvision.datasets import ImageFolder
 
 
-class ShipDataset(ImageFolder):
+class FolderDatasetAdaptiveAug(ImageFolder):
     def __init__(self, args, adaptive_aug: bool = False,  **kwargs):
-        super(ShipDataset, self).__init__(args, **kwargs)
+        super(FolderDatasetAdaptiveAug, self).__init__(args, **kwargs)
         self.should_transform = True
         self.adaptive_aug = adaptive_aug
 
@@ -30,10 +30,7 @@ class ShipDataset(ImageFolder):
         sample = sample.resize((256, 256))
         sample = np.asarray(sample).astype(np.float32)
         sample = np.moveaxis(sample, -1, 0)
-
         if self.transform is not None and self.should_transform:
             sample = self.transform(sample)
-        if self.target_transform is not None:
-            target = self.target_transform(target)
 
         return sample, target
