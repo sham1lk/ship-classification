@@ -19,8 +19,8 @@ class Classifier(pl.LightningModule):
         self.adaptive_lr = adaptive_lr
         self.freeze = freeze
         if self.freeze:
-            for param in self.model.features:
-                param.requires_grad = False
+            for block in self.model.features:
+                block.requires_grad = False
     def forward(self, x):
         return self.model(x)
 
