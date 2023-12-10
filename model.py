@@ -21,6 +21,7 @@ class Classifier(pl.LightningModule):
         if self.freeze:
             for block in self.model.features:
                 block.requires_grad = False
+
     def forward(self, x):
         return self.model(x)
 
@@ -51,9 +52,9 @@ class Classifier(pl.LightningModule):
 
     def on_train_epoch_end(self) -> None:
         if self.freeze:
-            for param in self.model.features:
-                if not param.requires_grad:
-                    param.requires_grad = True
+            for block in self.model.features:
+                if not block.requires_grad:
+                    block.requires_grad = True
                     break
 
     def configure_optimizers(self):
