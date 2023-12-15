@@ -8,6 +8,10 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 torch = "^2.1.1"
+wandb = "^0.16.0"
+pytorch-lightning = "^2.1.2"
+torchvision = "^0.16.1"
+click = "^8.1.7"
 
 
 [build-system]
