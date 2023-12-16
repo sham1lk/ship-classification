@@ -26,7 +26,11 @@ class Classifier(pl.LightningModule):
         return self.model(x)
 
     def training_step(self, batch, batch_idx):
-        x, y = batch
+        if len(batch[0]) == 2:
+            x = torch.cat((batch[0][0], batch[1][0]))
+            y = torch.cat((batch[0][1], batch[1][1]))
+        else:
+            x, y = batch
         y = y.type(torch.int64)
         y_hat = self.forward(x)
 
@@ -65,3 +69,7 @@ class Classifier(pl.LightningModule):
             return [optimizer], {'scheduler': scheduler, 'interval': 'epoch', 'frequency': 1}
         return optimizer
 
+    def predict_step(self, batch, batch_idx, dataloader_idx=0):
+        x, _ = batch
+        y_hat = torch.argmax(self.forward(x), dim=1)
+        return y_hat
