@@ -1,4 +1,5 @@
 import click
+import numpy as np
 import pytorch_lightning as pl
 import torch
 from pytorch_lightning.loggers import WandbLogger
@@ -37,14 +38,15 @@ def train(freeze_layers, adaptive_lr, adaptive_aug, extra_data):
         trainer = pl.Trainer(max_epochs=1, logger=wandb_logger, devices=[0])
         ans = trainer.predict(model, DataLoader(new_data, batch_size=64, shuffle=False))
         ans = torch.cat(ans)
-        images = [i[0] for i in list(new_data)]
+        images = [i[0].numpy() for i in list(new_data)]
+        images = np.array(images)
         del trainer
         trainer = pl.Trainer(max_epochs=10, logger=wandb_logger)
-        new_dataset = TensorDataset(torch.tensor(images), torch.tensor(ans))
+        new_dataset = TensorDataset(torch.from_numpy(images), ans)
+        concated = torch.utils.data.ConcatDataset([new_dataset, train_dataset])
         trainer.fit(
             model,
-            [DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=32),
-             DataLoader(new_dataset, batch_size=64, shuffle=True, num_workers=32)],
+            DataLoader(concated, batch_size=64, shuffle=True, num_workers=32),
             DataLoader(val_dataset, batch_size=128)
         )
     else:

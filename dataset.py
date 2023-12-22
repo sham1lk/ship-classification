@@ -1,6 +1,7 @@
 from typing import Tuple, Any
 
 import numpy as np
+import torch
 from torchvision.datasets import ImageFolder
 
 
@@ -33,4 +34,4 @@ class FolderDatasetAdaptiveAug(ImageFolder):
         if self.transform is not None and self.should_transform:
             sample = self.transform(sample)
 
-        return sample, target
+        return torch.from_numpy(sample), torch.tensor(target, dtype=torch.int8)
