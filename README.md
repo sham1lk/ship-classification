@@ -48,4 +48,5 @@ Notebook: https://colab.research.google.com/drive/1Xfh4cFmoWKX7KrgCEDXqolrdSpi8B
 Реализовать product-квантизацию полученного датасета в экстремальном случае: M = D, то есть, каждая компонента вектора квантизуется независимо от других (соответственно, вместо кластеризации простой подбор порогов, при которых ошибка представления компоненты будет наименьшей)
 
 Report: https://api.wandb.ai/links/shamilkr/2i5ue33s
-Notebook: https://colab.research.google.com/drive/1GYoNmdTdmOV4de7RTrnWLTzMvQQ9lVpj?usp=sharing
+Результаты квантования: result1.png result2.png
+
