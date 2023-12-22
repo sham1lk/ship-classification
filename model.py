@@ -26,11 +26,7 @@ class Classifier(pl.LightningModule):
         return self.model(x)
 
     def training_step(self, batch, batch_idx):
-        if len(batch[0]) == 2:
-            x = torch.cat((batch[0][0], batch[1][0]))
-            y = torch.cat((batch[0][1], batch[1][1]))
-        else:
-            x, y = batch
+        x, y = batch
         y = y.type(torch.int64)
         y_hat = self.forward(x)
 
