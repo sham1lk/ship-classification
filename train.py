@@ -14,7 +14,9 @@ from torchvision.transforms import v2
 @click.option("--adaptive_lr", default=False)
 @click.option("--adaptive_aug", default=False)
 @click.option("--extra_data", default=None)
-def train(freeze_layers, adaptive_lr, adaptive_aug, extra_data):
+@click.option("--optimized", default=None)
+@click.option("--epochs", default=25)
+def train(freeze_layers, adaptive_lr, adaptive_aug, extra_data, optimized, epochs):
     model = Classifier(freeze=freeze_layers, adaptive_lr=adaptive_lr)
     wandb_logger = WandbLogger(project="Diabetic Retinopathy Arranged")
     train_transforms = v2.Compose([
@@ -50,7 +52,15 @@ def train(freeze_layers, adaptive_lr, adaptive_aug, extra_data):
             DataLoader(val_dataset, batch_size=128)
         )
     else:
-        trainer = pl.Trainer(max_epochs=25, logger=wandb_logger)
+        if optimized:
+            torch.autograd.detect_anomaly = False
+            torch.autograd.profiler.emit_nvtx = False
+            torch.autograd.profiler.profile = False
+            torch.autograd.gradcheck = False
+            torch.autograd.gradgradcheck = False
+            torch.backends.cudnn.benchmark = True
+
+        trainer = pl.Trainer(max_epochs=epochs, logger=wandb_logger)
         trainer.fit(
             model,
             DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=64),
